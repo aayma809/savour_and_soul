@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "66545249642",
+    "project_id": "savourandsoul-16d8f",
+    "storage_bucket": "savourandsoul-16d8f.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:66545249642:android:e92675ea48e35cfc918913",
+        "android_client_info": {
+          "package_name": "com.example.savour_and_soul"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAAXy9MWoxmKa4Pmnj14VrddQp2nr3yG2w"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
