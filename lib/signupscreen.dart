@@ -13,6 +13,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   static const Color deepGreen = Color(0xFF2F5645);
   static const Color terracotta = Color(0xFF9C3E1F);
   static const Color darkText = Color(0xFF1C1C1A);
+  // ignore: unused_field
   static const Color labelText = Color(0xFF2B2B29);
   static const Color hintText = Color(0xFFAFAFAA);
   static const Color fieldBorder = Color(0xFFD9D5CC);
@@ -45,7 +46,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
     await Future.delayed(const Duration(seconds: 1));
 
     setState(() => _isSubmitting = false);
-    // TODO: Navigate to home screen on success
+
+    if (!mounted) return;
+
+    // Navigate to Home screen and remove SignUp from the back stack
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => const HomeScreen()),
+    );
   }
 
   @override
@@ -259,7 +267,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             ),
                             GestureDetector(
                               onTap: () {
-                                // TODO: Navigate to login screen
+                                // Navigate to Log In screen
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => const LoginScreen(),
+                                  ),
+                                );
                               },
                               child: const Text(
                                 'Log In',
@@ -339,6 +353,44 @@ class _SignUpScreenState extends State<SignUpScreen> {
           ),
         ),
       ],
+    );
+  }
+}
+
+/// ---------------------------------------------------------------------
+/// Placeholder destinations so this file compiles on its own.
+/// Replace these with your real screens, or delete if you already
+/// have HomeScreen / LoginScreen defined elsewhere in your project
+/// (and import them at the top instead).
+/// ---------------------------------------------------------------------
+class HomeScreen extends StatelessWidget {
+  const HomeScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Home'),
+        backgroundColor: const Color(0xFF2F5645),
+        foregroundColor: Colors.white,
+      ),
+      body: const Center(child: Text('Welcome to Savor & Soul!')),
+    );
+  }
+}
+
+class LoginScreen extends StatelessWidget {
+  const LoginScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Log In'),
+        backgroundColor: const Color(0xFF2F5645),
+        foregroundColor: Colors.white,
+      ),
+      body: const Center(child: Text('Log in form goes here')),
     );
   }
 }
