@@ -1,7 +1,9 @@
-import 'dart:ui';
 import 'package:flutter/material.dart';
- 
+import 'package:savour_and_soul/signupscreen.dart';
 
+// ─────────────────────────────────────────────────────────────
+// Colors used across the screen — tweak these to fine-tune the look
+// ─────────────────────────────────────────────────────────────
 class AppColors {
   static const background = Color(0xFFFAF3EE);
   static const cardBackground = Color(0xFFFDF9F6);
@@ -11,26 +13,26 @@ class AppColors {
   static const textGrey = Color(0xFF9A9A9A);
   static const borderGrey = Color(0xFFE3DDD6);
 }
- 
+
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
- 
+
   @override
   State<LoginScreen> createState() => _LoginScreenState();
 }
- 
+
 class _LoginScreenState extends State<LoginScreen> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   bool _obscurePassword = true;
- 
+
   @override
   void dispose() {
     _emailController.dispose();
     _passwordController.dispose();
     super.dispose();
   }
- 
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -42,13 +44,14 @@ class _LoginScreenState extends State<LoginScreen> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               const SizedBox(height: 90),
- 
+
               // ── Title ──
               Text(
                 'Savor & Soul',
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                  fontFamily: 'Georgia', // swap for a serif font like Playfair Display
+                  fontFamily:
+                      'Georgia', // swap for a serif font like Playfair Display
                   fontWeight: FontWeight.bold,
                   fontSize: 40,
                   color: AppColors.darkGreen,
@@ -63,9 +66,9 @@ class _LoginScreenState extends State<LoginScreen> {
                   color: AppColors.textDark.withOpacity(0.75),
                 ),
               ),
- 
+
               const SizedBox(height: 40),
- 
+
               // ── Card ──
               Container(
                 padding: const EdgeInsets.all(24),
@@ -99,9 +102,9 @@ class _LoginScreenState extends State<LoginScreen> {
                       icon: Icons.mail_outline,
                       obscure: false,
                     ),
- 
+
                     const SizedBox(height: 20),
- 
+
                     // Password label + forgot password
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -147,9 +150,9 @@ class _LoginScreenState extends State<LoginScreen> {
                         },
                       ),
                     ),
- 
+
                     const SizedBox(height: 28),
- 
+
                     // Log In button
                     SizedBox(
                       height: 56,
@@ -176,7 +179,11 @@ class _LoginScreenState extends State<LoginScreen> {
                               ),
                             ),
                             SizedBox(width: 8),
-                            Icon(Icons.arrow_forward, color: Colors.white, size: 20),
+                            Icon(
+                              Icons.arrow_forward,
+                              color: Colors.white,
+                              size: 20,
+                            ),
                           ],
                         ),
                       ),
@@ -184,9 +191,9 @@ class _LoginScreenState extends State<LoginScreen> {
                   ],
                 ),
               ),
- 
+
               const SizedBox(height: 28),
- 
+
               // ── Sign up row ──
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -200,7 +207,12 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   GestureDetector(
                     onTap: () {
-                      // TODO: navigate to sign up screen
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const SignUpScreen(),
+                        ),
+                      );
                     },
                     child: const Text(
                       'Sign Up',
@@ -213,7 +225,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ],
               ),
- 
+
               const SizedBox(height: 40),
             ],
           ),
@@ -221,7 +233,7 @@ class _LoginScreenState extends State<LoginScreen> {
       ),
     );
   }
- 
+
   Widget _buildTextField({
     required TextEditingController controller,
     required String hint,
@@ -245,8 +257,10 @@ class _LoginScreenState extends State<LoginScreen> {
           prefixIcon: Icon(icon, color: AppColors.textGrey, size: 22),
           suffixIcon: suffixIcon,
           border: InputBorder.none,
-          contentPadding:
-              const EdgeInsets.symmetric(vertical: 18, horizontal: 12),
+          contentPadding: const EdgeInsets.symmetric(
+            vertical: 18,
+            horizontal: 12,
+          ),
         ),
       ),
     );

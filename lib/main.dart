@@ -2,6 +2,8 @@ import 'dart:ui';
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:savour_and_soul/loginscreen.dart';
+import 'package:savour_and_soul/signupscreen.dart';
 
 import 'firebase_options.dart';
 
@@ -188,12 +190,17 @@ class OnboardingScreen extends StatelessWidget {
 
                   const Spacer(flex: 5),
 
-                  // CTA button
+                  // CTA button -> new users create an account
                   SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
                       onPressed: () {
-                        // TODO: Navigate to next screen / home
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const SignUpScreen(),
+                          ),
+                        );
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: deepGreen,
@@ -218,6 +225,38 @@ class OnboardingScreen extends StatelessWidget {
                           ),
                           SizedBox(width: 10),
                           Icon(Icons.arrow_forward, size: 16),
+                        ],
+                      ),
+                    ),
+                  ),
+
+                  const SizedBox(height: 18),
+
+                  // Existing users -> straight to login
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const LoginScreen(),
+                        ),
+                      );
+                    },
+                    child: RichText(
+                      text: TextSpan(
+                        style: TextStyle(
+                          fontSize: 15,
+                          color: darkText.withOpacity(0.8),
+                        ),
+                        children: const [
+                          TextSpan(text: 'Already have an account? '),
+                          TextSpan(
+                            text: 'Log In',
+                            style: TextStyle(
+                              color: deepGreen,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
                         ],
                       ),
                     ),

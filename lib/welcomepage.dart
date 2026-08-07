@@ -1,7 +1,7 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'loginscreen.dart';
+import 'package:savour_and_soul/signupscreen.dart';
 
 void main() {
   runApp(const SavorSoulApp());
