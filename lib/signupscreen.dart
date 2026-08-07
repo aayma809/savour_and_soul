@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:savour_and_soul/loginscreen.dart';
+import 'loginscreen.dart';
+import 'deliverylocationscreen.dart';
 
 // ─────────────────────────────────────────────────────────────
 // Reuses the same palette as login_screen.dart — keep these in sync
@@ -199,8 +200,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       child: ElevatedButton(
                         onPressed: () {
                           // TODO: hook up real sign-up logic (e.g. Firebase Auth
-                          // createUserWithEmailAndPassword) here, then navigate
-                          // to your home/dashboard screen on success.
+                          // createUserWithEmailAndPassword) here.
                           if (_passwordController.text !=
                               _confirmPasswordController.text) {
                             ScaffoldMessenger.of(context).showSnackBar(
@@ -210,9 +210,15 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             );
                             return;
                           }
-                          // On success, e.g.:
-                          // Navigator.pushReplacement(context,
-                          //   MaterialPageRoute(builder: (_) => const HomeScreen()));
+                          // On successful account creation, send the user
+                          // straight to set their delivery location.
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  const DeliveryLocationScreen(),
+                            ),
+                          );
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: _AppColors.brown,

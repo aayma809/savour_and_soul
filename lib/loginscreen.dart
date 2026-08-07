@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:savour_and_soul/signupscreen.dart';
+import 'loginscreen.dart';
+import 'deliverylocationscreen.dart';
 
 // ─────────────────────────────────────────────────────────────
-// Colors used across the screen — tweak these to fine-tune the look
+// Reuses the same palette as login_screen.dart — keep these in sync
 // ─────────────────────────────────────────────────────────────
-class AppColors {
+class _AppColors {
   static const background = Color(0xFFFAF3EE);
   static const cardBackground = Color(0xFFFDF9F6);
   static const darkGreen = Color(0xFF2F4B3C);
@@ -14,39 +15,45 @@ class AppColors {
   static const borderGrey = Color(0xFFE3DDD6);
 }
 
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+class SignUpScreen extends StatefulWidget {
+  const SignUpScreen({super.key});
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  State<SignUpScreen> createState() => _SignUpScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _SignUpScreenState extends State<SignUpScreen> {
+  final _nameController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+  final _confirmPasswordController = TextEditingController();
+
   bool _obscurePassword = true;
+  bool _obscureConfirmPassword = true;
 
   @override
   void dispose() {
+    _nameController.dispose();
     _emailController.dispose();
     _passwordController.dispose();
+    _confirmPasswordController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: _AppColors.background,
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 24),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              const SizedBox(height: 90),
+              const SizedBox(height: 70),
 
               // ── Title ──
-              Text(
+              const Text(
                 'Savor & Soul',
                 textAlign: TextAlign.center,
                 style: TextStyle(
@@ -54,26 +61,26 @@ class _LoginScreenState extends State<LoginScreen> {
                       'Georgia', // swap for a serif font like Playfair Display
                   fontWeight: FontWeight.bold,
                   fontSize: 40,
-                  color: AppColors.darkGreen,
+                  color: _AppColors.darkGreen,
                 ),
               ),
               const SizedBox(height: 8),
               Text(
-                'Welcome Back',
+                'Create Your Account',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 20,
-                  color: AppColors.textDark.withOpacity(0.75),
+                  color: _AppColors.textDark.withOpacity(0.75),
                 ),
               ),
 
-              const SizedBox(height: 40),
+              const SizedBox(height: 32),
 
               // ── Card ──
               Container(
                 padding: const EdgeInsets.all(24),
                 decoration: BoxDecoration(
-                  color: AppColors.cardBackground,
+                  color: _AppColors.cardBackground,
                   borderRadius: BorderRadius.circular(24),
                   boxShadow: [
                     BoxShadow(
@@ -86,13 +93,32 @@ class _LoginScreenState extends State<LoginScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Email label
+                    // Name
+                    const Text(
+                      'Full Name',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 15,
+                        color: _AppColors.textDark,
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    _buildTextField(
+                      controller: _nameController,
+                      hint: 'Jane Doe',
+                      icon: Icons.person_outline,
+                      obscure: false,
+                    ),
+
+                    const SizedBox(height: 20),
+
+                    // Email
                     const Text(
                       'Email Address',
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 15,
-                        color: AppColors.textDark,
+                        color: _AppColors.textDark,
                       ),
                     ),
                     const SizedBox(height: 10),
@@ -105,32 +131,14 @@ class _LoginScreenState extends State<LoginScreen> {
 
                     const SizedBox(height: 20),
 
-                    // Password label + forgot password
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        const Text(
-                          'Password',
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 15,
-                            color: AppColors.textDark,
-                          ),
-                        ),
-                        GestureDetector(
-                          onTap: () {
-                            // TODO: navigate to forgot password flow
-                          },
-                          child: const Text(
-                            'Forgot Password?',
-                            style: TextStyle(
-                              color: AppColors.darkGreen,
-                              fontWeight: FontWeight.w600,
-                              fontSize: 14,
-                            ),
-                          ),
-                        ),
-                      ],
+                    // Password
+                    const Text(
+                      'Password',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 15,
+                        color: _AppColors.textDark,
+                      ),
                     ),
                     const SizedBox(height: 10),
                     _buildTextField(
@@ -143,7 +151,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           _obscurePassword
                               ? Icons.visibility_off_outlined
                               : Icons.visibility_outlined,
-                          color: AppColors.textGrey,
+                          color: _AppColors.textGrey,
                         ),
                         onPressed: () {
                           setState(() => _obscurePassword = !_obscurePassword);
@@ -151,17 +159,69 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                     ),
 
+                    const SizedBox(height: 20),
+
+                    // Confirm Password
+                    const Text(
+                      'Confirm Password',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 15,
+                        color: _AppColors.textDark,
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    _buildTextField(
+                      controller: _confirmPasswordController,
+                      hint: '',
+                      icon: Icons.lock_outline,
+                      obscure: _obscureConfirmPassword,
+                      suffixIcon: IconButton(
+                        icon: Icon(
+                          _obscureConfirmPassword
+                              ? Icons.visibility_off_outlined
+                              : Icons.visibility_outlined,
+                          color: _AppColors.textGrey,
+                        ),
+                        onPressed: () {
+                          setState(
+                            () => _obscureConfirmPassword =
+                                !_obscureConfirmPassword,
+                          );
+                        },
+                      ),
+                    ),
+
                     const SizedBox(height: 28),
 
-                    // Log In button
+                    // Sign Up button
                     SizedBox(
                       height: 56,
                       child: ElevatedButton(
                         onPressed: () {
-                          // TODO: handle login
+                          // TODO: hook up real sign-up logic (e.g. Firebase Auth
+                          // createUserWithEmailAndPassword) here.
+                          if (_passwordController.text !=
+                              _confirmPasswordController.text) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('Passwords do not match'),
+                              ),
+                            );
+                            return;
+                          }
+                          // On successful account creation, send the user
+                          // straight to set their delivery location.
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  const DeliveryLocationScreen(),
+                            ),
+                          );
                         },
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: AppColors.brown,
+                          backgroundColor: _AppColors.brown,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(16),
                           ),
@@ -171,7 +231,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text(
-                              'Log In',
+                              'Sign Up',
                               style: TextStyle(
                                 fontSize: 17,
                                 fontWeight: FontWeight.bold,
@@ -194,30 +254,30 @@ class _LoginScreenState extends State<LoginScreen> {
 
               const SizedBox(height: 28),
 
-              // ── Sign up row ──
+              // ── Log in row ──
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    "Don't have an account? ",
+                    'Already have an account? ',
                     style: TextStyle(
-                      color: AppColors.textDark.withOpacity(0.8),
+                      color: _AppColors.textDark.withOpacity(0.8),
                       fontSize: 15,
                     ),
                   ),
                   GestureDetector(
                     onTap: () {
-                      Navigator.push(
+                      Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => const SignUpScreen(),
+                          builder: (context) => const LoginScreen(),
                         ),
                       );
                     },
                     child: const Text(
-                      'Sign Up',
+                      'Log In',
                       style: TextStyle(
-                        color: AppColors.darkGreen,
+                        color: _AppColors.darkGreen,
                         fontWeight: FontWeight.bold,
                         fontSize: 15,
                       ),
@@ -243,18 +303,18 @@ class _LoginScreenState extends State<LoginScreen> {
   }) {
     return Container(
       decoration: BoxDecoration(
-        border: Border.all(color: AppColors.borderGrey),
+        border: Border.all(color: _AppColors.borderGrey),
         borderRadius: BorderRadius.circular(14),
       ),
       child: TextField(
         controller: controller,
         obscureText: obscure,
         obscuringCharacter: '●',
-        style: const TextStyle(fontSize: 16, color: AppColors.textDark),
+        style: const TextStyle(fontSize: 16, color: _AppColors.textDark),
         decoration: InputDecoration(
           hintText: hint,
-          hintStyle: const TextStyle(color: AppColors.textGrey),
-          prefixIcon: Icon(icon, color: AppColors.textGrey, size: 22),
+          hintStyle: const TextStyle(color: _AppColors.textGrey),
+          prefixIcon: Icon(icon, color: _AppColors.textGrey, size: 22),
           suffixIcon: suffixIcon,
           border: InputBorder.none,
           contentPadding: const EdgeInsets.symmetric(
