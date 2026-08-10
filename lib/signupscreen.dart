@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'loginscreen.dart';
+import 'package:savour_and_soul/main.dart';
+
 import 'deliverylocationscreen.dart';
 
 // ─────────────────────────────────────────────────────────────
@@ -270,7 +271,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => const LoginScreen(),
+                          builder: (context) => const SignUpScreen(),
                         ),
                       );
                     },

@@ -1,10 +1,6 @@
 import 'package:flutter/material.dart';
-import 'loginscreen.dart';
 import 'deliverylocationscreen.dart';
 
-// ─────────────────────────────────────────────────────────────
-// Reuses the same palette as login_screen.dart — keep these in sync
-// ─────────────────────────────────────────────────────────────
 class _AppColors {
   static const background = Color(0xFFFAF3EE);
   static const cardBackground = Color(0xFFFDF9F6);
@@ -105,7 +101,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     const SizedBox(height: 10),
                     _buildTextField(
                       controller: _nameController,
-                      hint: 'Jane Doe',
+                      hint: 'name',
                       icon: Icons.person_outline,
                       obscure: false,
                     ),
@@ -270,7 +266,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => const LoginScreen(),
+                          builder: (context) => const SignUpScreen(),
                         ),
                       );
                     },

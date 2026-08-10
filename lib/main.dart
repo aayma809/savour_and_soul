@@ -3,7 +3,6 @@ import 'dart:ui';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:savour_and_soul/loginscreen.dart';
-import 'package:savour_and_soul/signupscreen.dart' hide SignUpScreen;
 
 import 'firebase_options.dart';
 
@@ -238,7 +237,7 @@ class OnboardingScreen extends StatelessWidget {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => const LoginScreen(),
+                          builder: (context) => const OnboardingScreen(),
                         ),
                       );
                     },
@@ -301,4 +300,8 @@ class OnboardingScreen extends StatelessWidget {
       ),
     );
   }
+}
+
+class LoginScreen {
+  const LoginScreen();
 }
