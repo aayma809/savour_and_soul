@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:savour_and_soul/checkoutscreen.dart';
 
 class _MenuItem {
   final String imageUrl;
@@ -358,7 +359,23 @@ class _MenuScreenState extends State<MenuScreen> {
                       child: ElevatedButton(
                         onPressed: () {
                           Navigator.of(context).pop();
-                          // TODO: hook up real checkout flow
+                          Navigator.of(this.context).push(
+                            MaterialPageRoute(
+                              builder: (_) => CheckoutScreen(
+                                items: entries.map((entry) {
+                                  final item = _menuItems.firstWhere(
+                                    (menuItem) => menuItem.title == entry.key,
+                                  );
+                                  return CheckoutItem(
+                                    title: item.title,
+                                    imageUrl: item.imageUrl,
+                                    price: item.price,
+                                    quantity: entry.value,
+                                  );
+                                }).toList(),
+                              ),
+                            ),
+                          );
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: deepGreen,

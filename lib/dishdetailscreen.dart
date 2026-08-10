@@ -96,7 +96,7 @@ class _MenuScreenState extends State<MenuScreen> {
     MenuItem(
       category: 'Starters',
       imageUrl:
-          'https://images.unsplash.com/photo-1626200926749-1077092f0159?w=800&q=80',
+          'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRH_US_kJlhVhLsYcx_cbv32kNDeWct1xQkle1wkOfWhg&s=10',
       title: 'Charred Octopus Carpaccio',
       description:
           'Thinly sliced octopus, chili oil, pickled fennel, citrus gremolata...',
@@ -131,7 +131,7 @@ class _MenuScreenState extends State<MenuScreen> {
     MenuItem(
       category: 'Desserts',
       imageUrl:
-          'https://images.unsplash.com/photo-1624353365286-3f8d62daad51?w=800&q=80',
+          'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRYSTe64n4eNV6KTVaO5ZCsCuuYeCEJKmEksZCk6bjBjQ&s',
       title: 'Valrhona Chocolate Fondant',
       description:
           'Molten dark chocolate cake, vanilla bean gelato, gold leaf, hazelnut...',
@@ -141,7 +141,7 @@ class _MenuScreenState extends State<MenuScreen> {
     MenuItem(
       category: 'Desserts',
       imageUrl:
-          'https://images.unsplash.com/photo-1567327613485-fbc7bf196198?w=800&q=80',
+          'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQcsNsPRIqiGeGAViak2_FzUT_6tvolP7yrfwlipplvdw&s=10',
       title: 'Basque Burnt Cheesecake',
       description:
           'Caramelized crust, silky center, macerated berries, mint...',
@@ -154,7 +154,7 @@ class _MenuScreenState extends State<MenuScreen> {
     MenuItem(
       category: 'Beverages',
       imageUrl:
-          'https://images.unsplash.com/photo-1544145945-f90425340c7e?w=800&q=80',
+          'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRHmPGUKX6r1CNUWhPQn0q-ZIhG0dtn6cdk4tXL2SiDgA&s=10',
       title: 'Sicilian Blood Orange Spritz',
       description:
           'Blood orange, prosecco, elderflower tonic, fresh rosemary...',
@@ -164,7 +164,7 @@ class _MenuScreenState extends State<MenuScreen> {
     MenuItem(
       category: 'Beverages',
       imageUrl:
-          'https://images.unsplash.com/photo-1461023058943-07fcbe16d735?w=800&q=80',
+          'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQa3q5_w49DRRyim85fvXaEwRFgjj_WPE34fgc7oM06Vg&s=10',
       title: 'Single-Origin Cold Brew',
       description: 'Slow-steeped Ethiopian beans, oat milk foam, cacao dust...',
       price: 1400,
@@ -417,7 +417,6 @@ class _MenuScreenState extends State<MenuScreen> {
                       child: ElevatedButton(
                         onPressed: () {
                           Navigator.of(context).pop();
-                          // TODO: hook up real checkout flow
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: deepGreen,
