@@ -1,11 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:savour_and_soul/main.dart';
 
 import 'deliverylocationscreen.dart';
 
-// ─────────────────────────────────────────────────────────────
-// Reuses the same palette as login_screen.dart — keep these in sync
-// ─────────────────────────────────────────────────────────────
 class _AppColors {
   static const background = Color(0xFFFAF3EE);
   static const cardBackground = Color(0xFFFDF9F6);

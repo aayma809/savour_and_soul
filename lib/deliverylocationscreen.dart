@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:savour_and_soul/menuscreen.dart';
 
 class _AppColors {
   static const background = Color(0xFFFAF3EE);
@@ -278,6 +279,7 @@ class _DeliveryLocationScreenState extends State<DeliveryLocationScreen> {
     }
   }
 
+  // ── THE FIX IS HERE ──
   void _confirmLocation() {
     final selected = _addresses.firstWhere(
       (a) => a.id == _selectedId,
@@ -294,9 +296,10 @@ class _DeliveryLocationScreenState extends State<DeliveryLocationScreen> {
       return;
     }
 
-    // TODO: persist _selectedId as the active delivery address, then
-    // navigate to the next screen if needed.
-    Navigator.pop(context, _selectedId);
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => const MenuScreen()),
+    );
   }
 
   @override
