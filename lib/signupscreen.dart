@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 
 import 'deliverylocationscreen.dart';
 import 'loginscreen.dart';
+import 'services/firebase_service.dart';
 
 class _AppColors {
   static const background = Color(0xFFFAF3EE);
@@ -218,11 +219,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             return;
                           }
                           try {
-                            await FirebaseAuth.instance
-                                .createUserWithEmailAndPassword(
-                                  email: _emailController.text.trim(),
-                                  password: _passwordController.text,
-                                );
+                            await FirebaseService.signUp(
+                              email: _emailController.text.trim(),
+                              password: _passwordController.text,
+                            );
                           } on FirebaseAuthException catch (error) {
                             if (!context.mounted) return;
                             final message = switch (error.code) {
