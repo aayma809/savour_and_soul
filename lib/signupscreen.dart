@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 import 'deliverylocationscreen.dart';
+import 'loginscreen.dart';
 
 class _AppColors {
   static const background = Color(0xFFFAF3EE);
@@ -195,9 +197,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     SizedBox(
                       height: 56,
                       child: ElevatedButton(
-                        onPressed: () {
-                          // TODO: hook up real sign-up logic (e.g. Firebase Auth
-                          // createUserWithEmailAndPassword) here.
+                        onPressed: () async {
                           if (_passwordController.text !=
                               _confirmPasswordController.text) {
                             ScaffoldMessenger.of(context).showSnackBar(
@@ -207,6 +207,54 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             );
                             return;
                           }
+                          if (_nameController.text.trim().isEmpty ||
+                              _emailController.text.trim().isEmpty ||
+                              _passwordController.text.isEmpty) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('Please complete all fields'),
+                              ),
+                            );
+                            return;
+                          }
+                          try {
+                            await FirebaseAuth.instance
+                                .createUserWithEmailAndPassword(
+                                  email: _emailController.text.trim(),
+                                  password: _passwordController.text,
+                                );
+                          } on FirebaseAuthException catch (error) {
+                            if (!context.mounted) return;
+                            final message = switch (error.code) {
+                              'email-already-in-use' =>
+                                'An account already exists. Please log in.',
+                              'operation-not-allowed' =>
+                                'Email/password sign-up is not enabled in Firebase.',
+                              'invalid-email' =>
+                                'Please enter a valid email address.',
+                              'weak-password' =>
+                                'Use a password with at least 6 characters.',
+                              'network-request-failed' =>
+                                'Check your internet connection and try again.',
+                              _ => error.message ??
+                                  'Unable to create your account.',
+                            };
+                            ScaffoldMessenger.of(
+                              context,
+                            ).showSnackBar(SnackBar(content: Text(message)));
+                            return;
+                          } catch (_) {
+                            if (!context.mounted) return;
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text(
+                                  'Authentication is unavailable. Fully restart the app after running flutter pub get.',
+                                ),
+                              ),
+                            );
+                            return;
+                          }
+                          if (!context.mounted) return;
                           // On successful account creation, send the user
                           // straight to set their delivery location.
                           Navigator.pushReplacement(
@@ -267,7 +315,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => const SignUpScreen(),
+                          builder: (context) => const LoginScreen(),
                         ),
                       );
                     },

@@ -82,7 +82,7 @@ class _MenuScreenState extends State<MenuScreen> {
     _MenuItem(
       category: 'Starters',
       imageUrl:
-          'https://images.unsplash.com/photo-1626200926749-1077092f0159?w=800&q=80',
+          'https://images.unsplash.com/photo-1575840925760-d98bb91c7f7b?auto=format&fit=crop&w=1200&q=85',
       title: 'Charred Octopus Carpaccio',
       description:
           'Thinly sliced octopus, chili oil, pickled fennel, citrus gremolata...',
@@ -789,7 +789,19 @@ class _MenuScreenState extends State<MenuScreen> {
                   SizedBox(
                     height: 170,
                     width: double.infinity,
-                    child: Image.network(imageUrl, fit: BoxFit.cover),
+                    child: Image.network(
+                      imageUrl,
+                      fit: BoxFit.cover,
+                      errorBuilder: (_, __, ___) => Container(
+                        color: const Color(0xFFE8E1D6),
+                        alignment: Alignment.center,
+                        child: const Icon(
+                          Icons.restaurant,
+                          color: deepGreen,
+                          size: 36,
+                        ),
+                      ),
+                    ),
                   ),
                   if (badge != null)
                     Positioned(
