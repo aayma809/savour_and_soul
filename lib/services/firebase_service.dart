@@ -45,8 +45,27 @@ class FirebaseService {
   static Future<UserCredential> signIn({
     required String email,
     required String password,
-  }) {
-    return auth.signInWithEmailAndPassword(email: email, password: password);
+  }) async {
+    final credential = await auth.signInWithEmailAndPassword(
+      email: email,
+      password: password,
+    );
+
+    final user = credential.user;
+    if (user != null) {
+      final docRef = firestore.collection('users').doc(user.uid);
+      final doc = await docRef.get();
+      if (!doc.exists) {
+        await docRef.set({
+          'uid': user.uid,
+          'fullName': user.displayName ?? '',
+          'email': user.email ?? email,
+          'createdAt': FieldValue.serverTimestamp(),
+        });
+      }
+    }
+
+    return credential;
   }
 
   static Future<void> signOut() => auth.signOut();
