@@ -4,7 +4,6 @@ import 'package:firebase_core/firebase_core.dart';
 
 import 'package:savour_and_soul/firebase_options.dart';
 
-/// Central access point for this app's Firebase services.
 class FirebaseService {
   FirebaseService._();
 
@@ -40,7 +39,8 @@ class FirebaseService {
       'fullName': fullName,
       'email': user.email ?? email,
       'createdAt': FieldValue.serverTimestamp(),
-    });
+  );
+  }
     return credential;
   }
 
@@ -86,7 +86,7 @@ class FirebaseService {
     // 3. Pass credentials to Firebase
     final OAuthCredential credential = GoogleAuthProvider.credential(
       accessToken: googleAuth?.accessToken,
-      idToken: googleAuth?.idToken,
+      idToken: googleAuth??.idToken,
     );
 
     // 4. Sign in to Firebase
