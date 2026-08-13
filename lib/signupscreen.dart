@@ -222,6 +222,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             await FirebaseService.signUp(
                               email: _emailController.text.trim(),
                               password: _passwordController.text,
+                              fullName: _nameController.text.trim(),
                             );
                           } on FirebaseAuthException catch (error) {
                             if (!context.mounted) return;
