@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 
 import 'package:savour_and_soul/firebase_options.dart';
+import 'package:savour_and_soul/services/firebase_service.dart' as auth;
 
 class FirebaseService {
   FirebaseService._();
@@ -19,7 +20,7 @@ class FirebaseService {
   }
 
   /// Sign up a new user with email & password, and save their info to Firestore.
-  static Future<UserCredential> signUp({
+   static Future<UserCredential> signUp({
     required String email,
     required String password,
     required String fullName,
@@ -41,11 +42,16 @@ class FirebaseService {
       'createdAt': FieldValue.serverTimestamp(),
   );
   }
-    return credential;
+    
+     Null get credential => null;
+
+  static void signUp({required String email, required String password, required String fullName}) {}
+
+  static Future<void> signIn({required String email, required String password, required String fullName}) async {}
   }
 
   /// Sign in an existing user with email & password.
-  static Future<UserCredential> signIn({
+  Future<signInWithEmailAndPassword> signIn({
     required String email,
     required String password,
   }) async {
@@ -56,6 +62,7 @@ class FirebaseService {
 
     final user = credential.user;
     if (user != null) {
+      var firestore;
       final docRef = firestore.collection('users').doc(user.uid);
       final doc = await docRef.get();
       if (!doc.exists) {
@@ -71,8 +78,16 @@ class FirebaseService {
     return credential;
   }
 
+extension on Object {
+  String? get displayName => null;
+
+  String? get email => null;
+
+  get uid => null;
+}
+
   /// Sign in or Register using Google Account
-  static Future<UserCredential?> signInWithGoogle() async {
+  Future<UserCredential?> signInWithGoogle() async {
     // 1. Trigger the native Google login dialog
     final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
 
@@ -84,18 +99,21 @@ class FirebaseService {
         await googleUser.authentication;
 
     // 3. Pass credentials to Firebase
+    
     final OAuthCredential credential = GoogleAuthProvider.credential(
       accessToken: googleAuth?.accessToken,
-      idToken: googleAuth??.idToken,
+      idToken: googleAuth??.idToken2,
     );
 
     // 4. Sign in to Firebase
+    var auth;
     final UserCredential credentialResult =
         await auth.signInWithCredential(credential);
 
     // 5. Store user information in Firestore if first-time user
     final user = credentialResult.user;
     if (user != null) {
+      var firestore;
       final docRef = firestore.collection('users').doc(user.uid);
       final doc = await docRef.get();
 
@@ -114,7 +132,7 @@ class FirebaseService {
   }
 
   /// Sign out from both Firebase and Google
-  static Future<void> signOut() async {
+  Future<void> signOut() async {
     await GoogleSignIn().signOut();
     await auth.signOut();
   }
@@ -131,4 +149,8 @@ class GoogleSignInAccount {
 }
 
 GoogleSignIn() {
+}
+
+class signInWithEmailAndPassword {
+  Object? get user => null;
 }
