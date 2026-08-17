@@ -5,10 +5,10 @@ import 'package:savour_and_soul/loginscreen.dart';
 import 'package:savour_and_soul/signupscreen.dart';
 import 'package:savour_and_soul/services/firebase_service.dart';
 
-void main(dynamic DefaultFirebaseOptions) async {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  await FirebaseService.initialize(DefaultFirebaseOptions.currentPlatform);
+  await FirebaseService.initialize();
 
   runApp(const MyApp());
 }
