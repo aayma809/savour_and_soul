@@ -15,7 +15,7 @@ class FirebaseService {
   // INITIALIZE FIREBASE
   // ------------------------------------------------------------
 
-  static Future<void> initialize(currentPlatform) async {
+  static Future<void> initialize() async {
     if (Firebase.apps.isEmpty) {
       await Firebase.initializeApp(
         options: DefaultFirebaseOptions.currentPlatform,
