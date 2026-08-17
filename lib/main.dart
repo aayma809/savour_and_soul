@@ -5,10 +5,10 @@ import 'package:savour_and_soul/loginscreen.dart';
 import 'package:savour_and_soul/signupscreen.dart';
 import 'package:savour_and_soul/services/firebase_service.dart';
 
-void main() async {
+void main(dynamic DefaultFirebaseOptions) async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  await FirebaseService.initialize();
+  await FirebaseService.initialize(DefaultFirebaseOptions.currentPlatform);
 
   runApp(const MyApp());
 }
@@ -22,9 +22,7 @@ class MyApp extends StatelessWidget {
       title: 'Savour & Soul',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: const Color(0xFF2F5645),
-        ),
+        colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF2F5645)),
         useMaterial3: true,
       ),
       home: const OnboardingScreen(),
@@ -62,12 +60,7 @@ class OnboardingScreen extends StatelessWidget {
           ),
 
           // Background blobs
-          _blob(
-            top: -40,
-            left: -60,
-            size: 260,
-            color: const Color(0xFF8FAE7C),
-          ),
+          _blob(top: -40, left: -60, size: 260, color: const Color(0xFF8FAE7C)),
 
           _blob(
             bottom: 260,
@@ -76,12 +69,7 @@ class OnboardingScreen extends StatelessWidget {
             color: const Color(0xFFD8C9A3),
           ),
 
-          _blob(
-            top: 60,
-            right: -80,
-            size: 300,
-            color: const Color(0xFFA9C6D8),
-          ),
+          _blob(top: 60, right: -80, size: 300, color: const Color(0xFFA9C6D8)),
 
           _blob(
             bottom: 120,
@@ -240,10 +228,7 @@ class OnboardingScreen extends StatelessWidget {
                             ),
                           ),
                           SizedBox(width: 10),
-                          Icon(
-                            Icons.arrow_forward,
-                            size: 16,
-                          ),
+                          Icon(Icons.arrow_forward, size: 16),
                         ],
                       ),
                     ),
@@ -268,9 +253,7 @@ class OnboardingScreen extends StatelessWidget {
                           color: darkText.withOpacity(0.8),
                         ),
                         children: const [
-                          TextSpan(
-                            text: 'Already have an account? ',
-                          ),
+                          TextSpan(text: 'Already have an account? '),
                           TextSpan(
                             text: 'Log In',
                             style: TextStyle(
@@ -309,10 +292,7 @@ class OnboardingScreen extends StatelessWidget {
       child: ClipRRect(
         borderRadius: BorderRadius.circular(size / 2),
         child: BackdropFilter(
-          filter: ImageFilter.blur(
-            sigmaX: 40,
-            sigmaY: 40,
-          ),
+          filter: ImageFilter.blur(sigmaX: 40, sigmaY: 40),
           child: Container(
             width: size,
             height: size,
@@ -326,4 +306,3 @@ class OnboardingScreen extends StatelessWidget {
     );
   }
 }
-

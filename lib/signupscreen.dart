@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:savour_and_soul/services/firebase_service.dart';
 
 import 'deliverylocationscreen.dart';
 import 'loginscreen.dart';
-import 'services/firebase_service.dart';
 
 class _AppColors {
   static const background = Color(0xFFFAF3EE);
@@ -219,7 +219,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             return;
                           }
                           try {
-                            await FirebaseService.signUp(
+                            FirebaseService.signIn(
                               email: _emailController.text.trim(),
                               password: _passwordController.text,
                               fullName: _nameController.text.trim(),
@@ -237,8 +237,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                 'Use a password with at least 6 characters.',
                               'network-request-failed' =>
                                 'Check your internet connection and try again.',
-                              _ => error.message ??
-                                  'Unable to create your account.',
+                              _ =>
+                                error.message ??
+                                    'Unable to create your account.',
                             };
                             ScaffoldMessenger.of(
                               context,

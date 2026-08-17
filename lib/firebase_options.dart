@@ -1,62 +1,86 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:savour_and_soul/firebase_options.dart';
-import 'package:savour_and_soul/services/firebase_service.dart';
+import 'package:firebase_core/firebase_core.dart' show FirebaseOptions;
+import 'package:flutter/foundation.dart'
+    show defaultTargetPlatform, kIsWeb, TargetPlatform;
 
-class FirebaseService {
-  FirebaseService._();
-
-  static final FirebaseAuth auth = FirebaseAuth.instance;
-  static final FirebaseFirestore firestore = FirebaseFirestore.instance;
-
-  static Future<void> initialize(dynamic DefaultFirebaseOptions) async {
-    if (Firebase.apps.isEmpty) {
-      await Firebase.initializeApp(
-        options: DefaultFirebaseOptions.currentPlatform,
-      );
+/// Default [FirebaseOptions] for use with your Firebase apps.
+///
+/// Example:
+/// ```dart
+/// import 'firebase_options.dart';
+/// // ...
+/// await Firebase.initializeApp(
+///   options: DefaultFirebaseOptions.currentPlatform,
+/// );
+/// ```
+class DefaultFirebaseOptions {
+  static FirebaseOptions get currentPlatform {
+    if (kIsWeb) {
+      return web;
+    }
+    switch (defaultTargetPlatform) {
+      case TargetPlatform.android:
+        return android;
+      case TargetPlatform.iOS:
+        return ios;
+      case TargetPlatform.macOS:
+        return macos;
+      case TargetPlatform.windows:
+        return windows;
+      case TargetPlatform.linux:
+        throw UnsupportedError(
+          'DefaultFirebaseOptions have not been configured for linux - '
+          'you can reconfigure this by running the FlutterFire CLI again.',
+        );
+      default:
+        throw UnsupportedError(
+          'DefaultFirebaseOptions are not supported for this platform.',
+        );
     }
   }
 
-  /// Sign in or Register using Google Account
-  static Future<UserCredential?> signInWithGoogle() async {
-    // 1. Trigger the native Google login dialog
-    final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+  static const FirebaseOptions web = FirebaseOptions(
+    apiKey: 'AIzaSyAejEigTErsvFXwDbPg3uCJP4pImpyJtmw',
+    appId: '1:66545249642:web:0d2366d270d3a013918913',
+    messagingSenderId: '66545249642',
+    projectId: 'savourandsoul-16d8f',
+    authDomain: 'savourandsoul-16d8f.firebaseapp.com',
+    storageBucket: 'savourandsoul-16d8f.firebasestorage.app',
+    measurementId: 'G-CMPV7N9V83',
+  );
 
-    // User canceled the sign-in prompt
-    if (googleUser == null) return null;
+  static const FirebaseOptions android = FirebaseOptions(
+    apiKey: 'AIzaSyAAXy9MWoxmKa4Pmnj14VrddQp2nr3yG2w',
+    appId: '1:66545249642:android:e92675ea48e35cfc918913',
+    messagingSenderId: '66545249642',
+    projectId: 'savourandsoul-16d8f',
+    storageBucket: 'savourandsoul-16d8f.firebasestorage.app',
+  );
 
-    // 2. Fetch auth details (tokens) from the Google account
-    final GoogleSignInAuthentication? googleAuth =
-        await googleUser.authentication;
+  static const FirebaseOptions ios = FirebaseOptions(
+    apiKey: 'AIzaSyBAW8y8Or3BHblhVInG_h3zBJYW2hZVHns',
+    appId: '1:66545249642:ios:0ac7e9dc4c26f8aa918913',
+    messagingSenderId: '66545249642',
+    projectId: 'savourandsoul-16d8f',
+    storageBucket: 'savourandsoul-16d8f.firebasestorage.app',
+    iosBundleId: 'com.example.savourAndSoul',
+  );
 
-    // 3. Pass credentials to Firebase
-    final OAuthCredential credential = GoogleAuthProvider.credential(
-      accessToken: googleAuth?.accessToken,
-      idToken: googleAuth?.idToken,
-    );
+  static const FirebaseOptions macos = FirebaseOptions(
+    apiKey: 'AIzaSyBAW8y8Or3BHblhVInG_h3zBJYW2hZVHns',
+    appId: '1:66545249642:ios:0ac7e9dc4c26f8aa918913',
+    messagingSenderId: '66545249642',
+    projectId: 'savourandsoul-16d8f',
+    storageBucket: 'savourandsoul-16d8f.firebasestorage.app',
+    iosBundleId: 'com.example.savourAndSoul',
+  );
 
-    // 4. Sign in to Firebase
-    final UserCredential credentialResult =
-        await auth.signInWithCredential(credential);
-
-    // 5. Store user information in Firestore if first-time user
-    final user = credentialResult.user;
-    if (user != null) {
-      final docRef = firestore.collection('users').doc(user.uid);
-      final doc = await docRef.get();
-
-      if (!doc.exists) {
-        await docRef.set({
-          'uid': user.uid,
-          'fullName': user.displayName ?? '',
-          'email': user.email ?? '',
-          'photoUrl': user.photoURL ?? '',
-          'createdAt': FieldValue.serverTimestamp(),
-        });
-      }
-    }
-
-    return credentialResult;
-  }
+  static const FirebaseOptions windows = FirebaseOptions(
+    apiKey: 'AIzaSyAejEigTErsvFXwDbPg3uCJP4pImpyJtmw',
+    appId: '1:66545249642:web:e076902c5cffb881918913',
+    messagingSenderId: '66545249642',
+    projectId: 'savourandsoul-16d8f',
+    authDomain: 'savourandsoul-16d8f.firebaseapp.com',
+    storageBucket: 'savourandsoul-16d8f.firebasestorage.app',
+    measurementId: 'G-GMPELPQHZJ',
+  );
 }

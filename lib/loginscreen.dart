@@ -3,9 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:savour_and_soul/deliverylocationscreen.dart';
 import 'package:savour_and_soul/services/firebase_service.dart';
 import 'package:savour_and_soul/signupscreen.dart';
-import 'package:savour_and_soul/services/firebase_service.dart';
-
-import 'services/firebase_service.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -51,7 +48,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
     setState(() => _isLoading = true);
     try {
-      await FirebaseService.signIn(
+      var signUp = FirebaseService.signUp(
         email: email,
         password: password,
         fullName: '',
