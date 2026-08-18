@@ -12,7 +12,12 @@
           "package_name": "com.example.savour_and_soul"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "66545249642-im5q9ak7tjd7ba2d9glb9aek2m17vv0b.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyAAXy9MWoxmKa4Pmnj14VrddQp2nr3yG2w"
@@ -20,7 +25,19 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "66545249642-im5q9ak7tjd7ba2d9glb9aek2m17vv0b.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "66545249642-tpft67a44ftr38f5kqopmfqkhplhgeou.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.savourAndSoul"
+              }
+            }
+          ]
         }
       }
     }

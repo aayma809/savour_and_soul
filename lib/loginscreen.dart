@@ -75,6 +75,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
       );
     } on FirebaseAuthException catch (error) {
       if (!mounted) return;
+      print(error);
       final message = switch (error.code) {
         'email-already-in-use' => 'An account already exists. Please log in.',
         'operation-not-allowed' =>
