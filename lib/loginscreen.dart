@@ -24,6 +24,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final _passwordController = TextEditingController();
   bool _obscurePassword = true;
   bool _isLoading = false;
+  bool _isGoogleLoading = false;
 
   @override
   void dispose() {
@@ -48,7 +49,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
     setState(() => _isLoading = true);
     try {
-      var signUp = FirebaseService.signUp(
+      await FirebaseService.signIn(
         email: email,
         password: password,
         fullName: '',
@@ -70,6 +71,30 @@ class _LoginScreenState extends State<LoginScreen> {
       }
     } finally {
       if (mounted) setState(() => _isLoading = false);
+    }
+  }
+
+  Future<void> _loginWithGoogle() async {
+    setState(() => _isGoogleLoading = true);
+    try {
+      final credential = await FirebaseService.signInWithGoogle();
+      if (credential == null) {
+        // User closed the Google account picker.
+        return;
+      }
+      if (!mounted) return;
+      Navigator.of(context).pushAndRemoveUntil(
+        MaterialPageRoute(builder: (_) => const DeliveryLocationScreen()),
+        (route) => false,
+      );
+    } on FirebaseAuthException catch (error) {
+      if (!mounted) return;
+      _showMessage(error.message ?? 'Google sign-in failed. Please try again.');
+    } catch (_) {
+      if (!mounted) return;
+      _showMessage('Google sign-in failed. Please try again.');
+    } finally {
+      if (mounted) setState(() => _isGoogleLoading = false);
     }
   }
 
@@ -182,6 +207,68 @@ class _LoginScreenState extends State<LoginScreen> {
                               ),
                       ),
                     ),
+
+                    const SizedBox(height: 20),
+
+                    // ── Divider ──
+                    Row(
+                      children: [
+                        Expanded(child: Divider(color: _border)),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 12),
+                          child: Text(
+                            'OR',
+                            style: TextStyle(
+                              color: _grey,
+                              fontWeight: FontWeight.w600,
+                              fontSize: 12,
+                            ),
+                          ),
+                        ),
+                        Expanded(child: Divider(color: _border)),
+                      ],
+                    ),
+
+                    const SizedBox(height: 20),
+
+                    // ── Continue with Google ──
+                    SizedBox(
+                      height: 56,
+                      width: double.infinity,
+                      child: OutlinedButton(
+                        onPressed: _isGoogleLoading ? null : _loginWithGoogle,
+                        style: OutlinedButton.styleFrom(
+                          side: const BorderSide(color: _border),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                        ),
+                        child: _isGoogleLoading
+                            ? const SizedBox(
+                                width: 22,
+                                height: 22,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                  color: _green,
+                                ),
+                              )
+                            : Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  const _GoogleLogo(size: 20),
+                                  const SizedBox(width: 10),
+                                  Text(
+                                    'Continue with Google',
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w600,
+                                      color: _text,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                      ),
+                    ),
                   ],
                 ),
               ),
@@ -246,6 +333,35 @@ class _LoginScreenState extends State<LoginScreen> {
             vertical: 18,
             horizontal: 12,
           ),
+        ),
+      ),
+    );
+  }
+}
+
+/// A simple "G" badge stand-in for the Google logo.
+/// Swap for a real asset (e.g. assets/google_logo.png) if you have one.
+class _GoogleLogo extends StatelessWidget {
+  final double size;
+  const _GoogleLogo({required this.size});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: size,
+      height: size,
+      alignment: Alignment.center,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        border: Border.all(color: const Color(0xFFDADCE0)),
+      ),
+      child: Text(
+        'G',
+        style: TextStyle(
+          fontSize: size * 0.65,
+          fontWeight: FontWeight.bold,
+          color: const Color(0xFF4285F4),
+          height: 1,
         ),
       ),
     );

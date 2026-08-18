@@ -30,6 +30,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   bool _obscurePassword = true;
   bool _obscureConfirmPassword = true;
+  bool _isLoading = false;
+  bool _isGoogleLoading = false;
 
   @override
   void dispose() {
@@ -38,6 +40,85 @@ class _SignUpScreenState extends State<SignUpScreen> {
     _passwordController.dispose();
     _confirmPasswordController.dispose();
     super.dispose();
+  }
+
+  void _showMessage(String message) {
+    ScaffoldMessenger.of(context)
+      ..hideCurrentSnackBar()
+      ..showSnackBar(SnackBar(content: Text(message)));
+  }
+
+  Future<void> _signUp() async {
+    if (_passwordController.text != _confirmPasswordController.text) {
+      _showMessage('Passwords do not match');
+      return;
+    }
+    if (_nameController.text.trim().isEmpty ||
+        _emailController.text.trim().isEmpty ||
+        _passwordController.text.isEmpty) {
+      _showMessage('Please complete all fields');
+      return;
+    }
+
+    setState(() => _isLoading = true);
+    try {
+      await FirebaseService.signUp(
+        email: _emailController.text.trim(),
+        password: _passwordController.text,
+        fullName: _nameController.text.trim(),
+      );
+      if (!mounted) return;
+      // On successful account creation, send the user
+      // straight to set their delivery location.
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const DeliveryLocationScreen()),
+      );
+    } on FirebaseAuthException catch (error) {
+      if (!mounted) return;
+      final message = switch (error.code) {
+        'email-already-in-use' => 'An account already exists. Please log in.',
+        'operation-not-allowed' =>
+          'Email/password sign-up is not enabled in Firebase.',
+        'invalid-email' => 'Please enter a valid email address.',
+        'weak-password' => 'Use a password with at least 6 characters.',
+        'network-request-failed' =>
+          'Check your internet connection and try again.',
+        _ => error.message ?? 'Unable to create your account.',
+      };
+      _showMessage(message);
+    } catch (_) {
+      if (!mounted) return;
+      _showMessage(
+        'Authentication is unavailable. Fully restart the app after running flutter pub get.',
+      );
+    } finally {
+      if (mounted) setState(() => _isLoading = false);
+    }
+  }
+
+  Future<void> _signUpWithGoogle() async {
+    setState(() => _isGoogleLoading = true);
+    try {
+      final credential = await FirebaseService.signInWithGoogle();
+      if (credential == null) {
+        // User closed the Google account picker.
+        return;
+      }
+      if (!mounted) return;
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const DeliveryLocationScreen()),
+      );
+    } on FirebaseAuthException catch (error) {
+      if (!mounted) return;
+      _showMessage(error.message ?? 'Google sign-in failed. Please try again.');
+    } catch (_) {
+      if (!mounted) return;
+      _showMessage('Google sign-in failed. Please try again.');
+    } finally {
+      if (mounted) setState(() => _isGoogleLoading = false);
+    }
   }
 
   @override
@@ -198,75 +279,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     SizedBox(
                       height: 56,
                       child: ElevatedButton(
-                        onPressed: () async {
-                          if (_passwordController.text !=
-                              _confirmPasswordController.text) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text('Passwords do not match'),
-                              ),
-                            );
-                            return;
-                          }
-                          if (_nameController.text.trim().isEmpty ||
-                              _emailController.text.trim().isEmpty ||
-                              _passwordController.text.isEmpty) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text('Please complete all fields'),
-                              ),
-                            );
-                            return;
-                          }
-                          try {
-                            FirebaseService.signIn(
-                              email: _emailController.text.trim(),
-                              password: _passwordController.text,
-                              fullName: _nameController.text.trim(),
-                            );
-                          } on FirebaseAuthException catch (error) {
-                            if (!context.mounted) return;
-                            final message = switch (error.code) {
-                              'email-already-in-use' =>
-                                'An account already exists. Please log in.',
-                              'operation-not-allowed' =>
-                                'Email/password sign-up is not enabled in Firebase.',
-                              'invalid-email' =>
-                                'Please enter a valid email address.',
-                              'weak-password' =>
-                                'Use a password with at least 6 characters.',
-                              'network-request-failed' =>
-                                'Check your internet connection and try again.',
-                              _ =>
-                                error.message ??
-                                    'Unable to create your account.',
-                            };
-                            ScaffoldMessenger.of(
-                              context,
-                            ).showSnackBar(SnackBar(content: Text(message)));
-                            return;
-                          } catch (_) {
-                            if (!context.mounted) return;
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text(
-                                  'Authentication is unavailable. Fully restart the app after running flutter pub get.',
-                                ),
-                              ),
-                            );
-                            return;
-                          }
-                          if (!context.mounted) return;
-                          // On successful account creation, send the user
-                          // straight to set their delivery location.
-                          Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) =>
-                                  const DeliveryLocationScreen(),
-                            ),
-                          );
-                        },
+                        onPressed: _isLoading ? null : _signUp,
                         style: ElevatedButton.styleFrom(
                           backgroundColor: _AppColors.brown,
                           shape: RoundedRectangleBorder(
@@ -274,25 +287,95 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           ),
                           elevation: 0,
                         ),
-                        child: const Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              'Sign Up',
-                              style: TextStyle(
-                                fontSize: 17,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white,
+                        child: _isLoading
+                            ? const SizedBox(
+                                width: 22,
+                                height: 22,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                  color: Colors.white,
+                                ),
+                              )
+                            : const Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    'Sign Up',
+                                    style: TextStyle(
+                                      fontSize: 17,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                  SizedBox(width: 8),
+                                  Icon(
+                                    Icons.arrow_forward,
+                                    color: Colors.white,
+                                    size: 20,
+                                  ),
+                                ],
                               ),
+                      ),
+                    ),
+
+                    const SizedBox(height: 20),
+
+                    // ── Divider ──
+                    Row(
+                      children: [
+                        Expanded(child: Divider(color: _AppColors.borderGrey)),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 12),
+                          child: Text(
+                            'OR',
+                            style: TextStyle(
+                              color: _AppColors.textGrey,
+                              fontWeight: FontWeight.w600,
+                              fontSize: 12,
                             ),
-                            SizedBox(width: 8),
-                            Icon(
-                              Icons.arrow_forward,
-                              color: Colors.white,
-                              size: 20,
-                            ),
-                          ],
+                          ),
                         ),
+                        Expanded(child: Divider(color: _AppColors.borderGrey)),
+                      ],
+                    ),
+
+                    const SizedBox(height: 20),
+
+                    // ── Continue with Google ──
+                    SizedBox(
+                      height: 56,
+                      child: OutlinedButton(
+                        onPressed: _isGoogleLoading ? null : _signUpWithGoogle,
+                        style: OutlinedButton.styleFrom(
+                          side: const BorderSide(color: _AppColors.borderGrey),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                        ),
+                        child: _isGoogleLoading
+                            ? const SizedBox(
+                                width: 22,
+                                height: 22,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                  color: _AppColors.darkGreen,
+                                ),
+                              )
+                            : Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  const _GoogleLogo(size: 20),
+                                  const SizedBox(width: 10),
+                                  Text(
+                                    'Continue with Google',
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w600,
+                                      color: _AppColors.textDark,
+                                    ),
+                                  ),
+                                ],
+                              ),
                       ),
                     ),
                   ],
@@ -368,6 +451,35 @@ class _SignUpScreenState extends State<SignUpScreen> {
             vertical: 18,
             horizontal: 12,
           ),
+        ),
+      ),
+    );
+  }
+}
+
+/// A simple "G" badge stand-in for the Google logo.
+/// Swap for a real asset (e.g. assets/google_logo.png) if you have one.
+class _GoogleLogo extends StatelessWidget {
+  final double size;
+  const _GoogleLogo({required this.size});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: size,
+      height: size,
+      alignment: Alignment.center,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        border: Border.all(color: const Color(0xFFDADCE0)),
+      ),
+      child: Text(
+        'G',
+        style: TextStyle(
+          fontSize: size * 0.65,
+          fontWeight: FontWeight.bold,
+          color: const Color(0xFF4285F4),
+          height: 1,
         ),
       ),
     );
