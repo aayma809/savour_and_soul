@@ -3,7 +3,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:savour_and_soul/services/firebase_service.dart';
 
 import 'deliverylocationscreen.dart';
-import 'loginscreen.dart';
 
 class _AppColors {
   static const background = Color(0xFFFAF3EE);
