@@ -2,7 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:savour_and_soul/loginscreen.dart';
-import 'package:savour_and_soul/signupscreen.dart';
+import 'package:savour_and_soul/signupscreen.dart' hide SignUpScreen;
 import 'package:savour_and_soul/services/firebase_service.dart';
 
 void main() async {
@@ -242,7 +242,7 @@ class OnboardingScreen extends StatelessWidget {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => const LoginScreen(),
+                          builder: (context) => const SignUpScreen(),
                         ),
                       );
                     },

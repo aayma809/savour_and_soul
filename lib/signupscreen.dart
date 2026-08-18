@@ -111,9 +111,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
         MaterialPageRoute(builder: (context) => const DeliveryLocationScreen()),
       );
     } on FirebaseAuthException catch (error) {
+      debugPrint(
+        'Google sign-in FirebaseAuthException: ${error.code} - ${error.message}',
+      );
       if (!mounted) return;
       _showMessage(error.message ?? 'Google sign-in failed. Please try again.');
-    } catch (_) {
+    } catch (error, stackTrace) {
+      debugPrint('Google sign-in error: $error');
+      debugPrint('$stackTrace');
       if (!mounted) return;
       _showMessage('Google sign-in failed. Please try again.');
     } finally {
@@ -400,7 +405,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => const LoginScreen(),
+                          builder: (context) => const SignUpScreen(),
                         ),
                       );
                     },
@@ -457,29 +462,39 @@ class _SignUpScreenState extends State<SignUpScreen> {
   }
 }
 
-/// A simple "G" badge stand-in for the Google logo.
-/// Swap for a real asset (e.g. assets/google_logo.png) if you have one.
+class LoginScreen {
+  const LoginScreen();
+}
+
+/// Loads the real Google 'G' logo from assets/icons/google_logo.png.
+/// Falls back to a plain "G" badge if the asset hasn't been added yet,
+/// so the button never breaks the layout.
 class _GoogleLogo extends StatelessWidget {
   final double size;
   const _GoogleLogo({required this.size});
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return Image.asset(
+      'assets/icons/google_logo.png',
       width: size,
       height: size,
-      alignment: Alignment.center,
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        border: Border.all(color: const Color(0xFFDADCE0)),
-      ),
-      child: Text(
-        'G',
-        style: TextStyle(
-          fontSize: size * 0.65,
-          fontWeight: FontWeight.bold,
-          color: const Color(0xFF4285F4),
-          height: 1,
+      errorBuilder: (context, error, stackTrace) => Container(
+        width: size,
+        height: size,
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          border: Border.all(color: const Color(0xFFDADCE0)),
+        ),
+        child: Text(
+          'G',
+          style: TextStyle(
+            fontSize: size * 0.65,
+            fontWeight: FontWeight.bold,
+            color: const Color(0xFF4285F4),
+            height: 1,
+          ),
         ),
       ),
     );
