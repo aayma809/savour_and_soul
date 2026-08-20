@@ -395,7 +395,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   Text(
                     'Already have an account? ',
                     style: TextStyle(
-                      color: _AppColors.textDark.withOpacity(0.8),
+                      color: _AppColors.textDark.withValues(alpha: 0.8),
                       fontSize: 15,
                     ),
                   ),
