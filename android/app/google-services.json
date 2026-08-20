@@ -14,6 +14,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "66545249642-0124vi091i7nlo2lis2r64hbpifrgtck.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.savour_and_soul",
+            "certificate_hash": "984657d75470804b9f27a8875678d6cdbf063e3d"
+          }
+        },
+        {
           "client_id": "66545249642-im5q9ak7tjd7ba2d9glb9aek2m17vv0b.apps.googleusercontent.com",
           "client_type": 3
         }
