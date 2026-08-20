@@ -101,44 +101,32 @@ class FirebaseService {
   // ------------------------------------------------------------
 
   static Future<UserCredential?> signInWithGoogle() async {
+  try {
     final GoogleSignIn googleSignIn = GoogleSignIn.instance;
-    await googleSignIn.initialize();
+    await googleSignIn.initialize(
+      clientId: '66545249642-im5q9ak7tjd7ba2d9glb9aek2m17vv0b.apps.googleusercontent.com',
+    );
 
-    // 1. Trigger the native Google login dialog
     final GoogleSignInAccount? googleUser = await googleSignIn.authenticate();
-
-    // User cancelled the sign-in prompt
     if (googleUser == null) return null;
 
-    // 2. ID token comes from authentication
     final GoogleSignInAuthentication googleAuth = googleUser.authentication;
 
-    // 3. Access token comes from the authorization client (separate call)
     final GoogleSignInClientAuthorization? authorization = await googleUser
         .authorizationClient
-        .authorizationForScopes([]);
+        .authorizationForScopes(['email', 'profile']);
 
-    // 4. Create Firebase credential
     final OAuthCredential credential = GoogleAuthProvider.credential(
       accessToken: authorization?.accessToken,
       idToken: googleAuth.idToken,
     );
 
-    // 5. Sign in to Firebase
-    final UserCredential credentialResult = await auth.signInWithCredential(
-      credential,
-    );
+    final UserCredential credentialResult = await auth.signInWithCredential(credential);
 
-    // 6. Save user information in Firestore if first-time user
     final User? user = credentialResult.user;
-
     if (user != null) {
-      final DocumentReference<Map<String, dynamic>> docRef = firestore
-          .collection('users')
-          .doc(user.uid);
-
-      final DocumentSnapshot<Map<String, dynamic>> doc = await docRef.get();
-
+      final docRef = firestore.collection('users').doc(user.uid);
+      final doc = await docRef.get();
       if (!doc.exists) {
         await docRef.set({
           'uid': user.uid,
@@ -149,16 +137,10 @@ class FirebaseService {
         });
       }
     }
-
     return credentialResult;
-  }
-
-  // ------------------------------------------------------------
-  // SIGN OUT
-  // ------------------------------------------------------------
-
-  static Future<void> signOut() async {
-    await GoogleSignIn.instance.signOut();
-    await auth.signOut();
+  } catch (e, st) {
+    print('GOOGLE SIGN-IN ERROR: $e');
+    print(st);
+    rethrow;
   }
 }
