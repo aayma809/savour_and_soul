@@ -101,46 +101,50 @@ class FirebaseService {
   // ------------------------------------------------------------
 
   static Future<UserCredential?> signInWithGoogle() async {
-  try {
-    final GoogleSignIn googleSignIn = GoogleSignIn.instance;
-    await googleSignIn.initialize(
-      clientId: '66545249642-im5q9ak7tjd7ba2d9glb9aek2m17vv0b.apps.googleusercontent.com',
-    );
+    try {
+      final GoogleSignIn googleSignIn = GoogleSignIn.instance;
+      await googleSignIn.initialize(
+        clientId:
+            '66545249642-im5q9ak7tjd7ba2d9glb9aek2m17vv0b.apps.googleusercontent.com',
+      );
 
-    final GoogleSignInAccount? googleUser = await googleSignIn.authenticate();
-    if (googleUser == null) return null;
+      final GoogleSignInAccount? googleUser = await googleSignIn.authenticate();
+      if (googleUser == null) return null;
 
-    final GoogleSignInAuthentication googleAuth = googleUser.authentication;
+      final GoogleSignInAuthentication googleAuth = googleUser.authentication;
 
-    final GoogleSignInClientAuthorization? authorization = await googleUser
-        .authorizationClient
-        .authorizationForScopes(['email', 'profile']);
+      final GoogleSignInClientAuthorization? authorization = await googleUser
+          .authorizationClient
+          .authorizationForScopes(['email', 'profile']);
 
-    final OAuthCredential credential = GoogleAuthProvider.credential(
-      accessToken: authorization?.accessToken,
-      idToken: googleAuth.idToken,
-    );
+      final OAuthCredential credential = GoogleAuthProvider.credential(
+        accessToken: authorization?.accessToken,
+        idToken: googleAuth.idToken,
+      );
 
-    final UserCredential credentialResult = await auth.signInWithCredential(credential);
+      final UserCredential credentialResult = await auth.signInWithCredential(
+        credential,
+      );
 
-    final User? user = credentialResult.user;
-    if (user != null) {
-      final docRef = firestore.collection('users').doc(user.uid);
-      final doc = await docRef.get();
-      if (!doc.exists) {
-        await docRef.set({
-          'uid': user.uid,
-          'fullName': user.displayName ?? '',
-          'email': user.email ?? '',
-          'photoUrl': user.photoURL ?? '',
-          'createdAt': FieldValue.serverTimestamp(),
-        });
+      final User? user = credentialResult.user;
+      if (user != null) {
+        final docRef = firestore.collection('users').doc(user.uid);
+        final doc = await docRef.get();
+        if (!doc.exists) {
+          await docRef.set({
+            'uid': user.uid,
+            'fullName': user.displayName ?? '',
+            'email': user.email ?? '',
+            'photoUrl': user.photoURL ?? '',
+            'createdAt': FieldValue.serverTimestamp(),
+          });
+        }
       }
+      return credentialResult;
+    } catch (e, st) {
+      print('GOOGLE SIGN-IN ERROR: $e');
+      print(st);
+      rethrow;
     }
-    return credentialResult;
-  } catch (e, st) {
-    print('GOOGLE SIGN-IN ERROR: $e');
-    print(st);
-    rethrow;
   }
 }
