@@ -1,9 +1,5 @@
 import 'package:flutter/material.dart';
 
-// ---------------------------------------------------------------------
-// MENU ITEM MODEL
-// Shared by MenuScreen and DishDetailScreen.
-// ---------------------------------------------------------------------
 class MenuItem {
   final String imageUrl;
   final String title;

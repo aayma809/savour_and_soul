@@ -4,6 +4,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 import 'package:savour_and_soul/firebase_options.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 
 class FirebaseService {
   FirebaseService._();
@@ -102,30 +103,34 @@ class FirebaseService {
 
   static Future<UserCredential?> signInWithGoogle() async {
     try {
-      final GoogleSignIn googleSignIn = GoogleSignIn.instance;
-      await googleSignIn.initialize(
-        clientId:
-            '66545249642-im5q9ak7tjd7ba2d9glb9aek2m17vv0b.apps.googleusercontent.com',
-      );
+      UserCredential credentialResult;
 
-      final GoogleSignInAccount? googleUser = await googleSignIn.authenticate();
-      if (googleUser == null) return null;
+      if (kIsWeb) {
+        // WEB: Firebase handles the popup directly, no google_sign_in needed
+        final GoogleAuthProvider googleProvider = GoogleAuthProvider();
+        credentialResult = await auth.signInWithPopup(googleProvider);
+      } else {
+        // ANDROID / iOS: use google_sign_in package as before
+        final GoogleSignIn googleSignIn = GoogleSignIn.instance;
+        await googleSignIn.initialize();
 
-      final GoogleSignInAuthentication googleAuth = googleUser.authentication;
+        final GoogleSignInAccount? googleUser = await googleSignIn
+            .authenticate();
+        if (googleUser == null) return null;
 
-      final GoogleSignInClientAuthorization? authorization = await googleUser
-          .authorizationClient
-          .authorizationForScopes(['email', 'profile']);
+        final GoogleSignInAuthentication googleAuth = googleUser.authentication;
+        final authorization = await googleUser.authorizationClient
+            .authorizationForScopes(['email', 'profile']);
 
-      final OAuthCredential credential = GoogleAuthProvider.credential(
-        accessToken: authorization?.accessToken,
-        idToken: googleAuth.idToken,
-      );
+        final credential = GoogleAuthProvider.credential(
+          accessToken: authorization?.accessToken,
+          idToken: googleAuth.idToken,
+        );
 
-      final UserCredential credentialResult = await auth.signInWithCredential(
-        credential,
-      );
+        credentialResult = await auth.signInWithCredential(credential);
+      }
 
+      // Save user info if first-time user
       final User? user = credentialResult.user;
       if (user != null) {
         final docRef = firestore.collection('users').doc(user.uid);
@@ -140,6 +145,7 @@ class FirebaseService {
           });
         }
       }
+
       return credentialResult;
     } catch (e, st) {
       print('GOOGLE SIGN-IN ERROR: $e');
