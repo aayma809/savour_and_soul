@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:savour_and_soul/AddItemScreen.dart';
 import 'package:savour_and_soul/checkoutscreen.dart';
-import 'package:savour_and_soul/add_item_screen.dart';
+
 
 class _MenuItem {
   final String imageUrl;
@@ -432,7 +433,11 @@ class _MenuScreenState extends State<MenuScreen> {
         onPressed: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => const AddItemScreen()),
+            MaterialPageRoute(
+              builder: (context) {
+                return AddItemScreen();
+              },
+            ),
           );
         },
         icon: const Icon(Icons.add, color: Colors.white),
@@ -963,6 +968,4 @@ class _MenuScreenState extends State<MenuScreen> {
   }
 }
 
-class AddItemScreen {
-  const AddItemScreen();
-}
+
