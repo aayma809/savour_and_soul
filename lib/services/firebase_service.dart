@@ -24,10 +24,6 @@ class FirebaseService {
     }
   }
 
-  // ------------------------------------------------------------
-  // SIGN UP WITH EMAIL AND PASSWORD
-  // ------------------------------------------------------------
-
   static Future<UserCredential> signUp({
     required String email,
     required String password,
@@ -56,10 +52,6 @@ class FirebaseService {
 
     return credential;
   }
-
-  // ------------------------------------------------------------
-  // SIGN IN WITH EMAIL AND PASSWORD
-  // ------------------------------------------------------------
 
   static Future<UserCredential> signIn({
     required String email,
@@ -93,13 +85,6 @@ class FirebaseService {
 
     return credential;
   }
-
-  // ------------------------------------------------------------
-  // GOOGLE SIGN IN
-  // (google_sign_in v7+ API: GoogleSignIn.instance, .authenticate(),
-  //  and access tokens come from authorizationClient, not from
-  //  GoogleSignInAuthentication, which now only carries idToken.)
-  // ------------------------------------------------------------
 
   static Future<UserCredential?> signInWithGoogle() async {
     try {
